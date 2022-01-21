@@ -14,18 +14,22 @@ function createOrbitMiddleware() {
     }) =>
     (next: any) =>
     (action: any) => {
+      if (typeof action === 'function') {
+        return action(dispatch, getState);
+      }
       effectMap.forEach((cal) => cal(dispatch, getState, action));
       return next(action);
     };
 }
 
 /**
- * Orbit is a redux middleware that allows you to subscribe to effects based on action.
+ * Orbit is a redux middleware that allows you to subscribe to effects based on action, and
+ * it also works like a redux-thunk for the effects inside the creatReducer() function.
  *
  */
 export const orbit = createOrbitMiddleware();
 
-export function subscribeEffect(
+function subscribeEffect(
   actionTypes: string[],
   callback: EffectHandler
 ) {

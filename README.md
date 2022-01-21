@@ -1,6 +1,6 @@
 # Orbit
 
-Orbit is a redux middleware that allows you to subscribe to effects based on action.
+Orbit is a redux middleware that allows you to subscribe to effects based on action, and it also works like a redux-thunk for the effects inside the creatReducer() function.
 
 ## Installation
 

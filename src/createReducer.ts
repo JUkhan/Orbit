@@ -5,7 +5,7 @@ import {
   ReducerOptions,
   EffectHandlers,
 } from './typeHelper';
-import { subscribeEffect } from './orbit';
+
 /**
  * A function that accepts an initial state, an object full of reducer
  * functions, and a "state name", and also it can have an object full of effect handlers, and automatically generates
@@ -43,8 +43,9 @@ export function createReducer<
   });
 
   Object.keys(effects).map((key) => {
-    actions[key] = createAction(key);
-    subscribeEffect([key], effects[key]);
+    const handler = effects[key];
+    actions[key] = (payload: any) => (dispatch: any, getState: any) =>
+      handler(dispatch, getState, { payload: payload });
   });
 
   return {

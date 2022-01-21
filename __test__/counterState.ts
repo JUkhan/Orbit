@@ -19,7 +19,8 @@ export const counterSlice = createReducer({
   },
 
   effects: {
-    async asyncInc(dispatch) {
+    async asyncInc(dispatch, _, action: PayloadAction<string>) {
+      console.log(action.payload);
       dispatch(loading());
       await new Promise((resolve) =>
         setTimeout(() => dispatch(increment(1)), 100)

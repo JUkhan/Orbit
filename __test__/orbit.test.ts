@@ -27,8 +27,8 @@ describe('Orbit', () => {
     expect(orbit.getState().counter.count).toBe(1);
   });
 
-  it('async incremen', async () => {
-    orbit.dispatch(asyncInc());
+  it('async increment', async () => {
+    orbit.dispatch(asyncInc('asyncInc - in action'));
     expect(orbit.getState().counter.loading).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(orbit.getState().counter.count).toBe(1);
