@@ -79,10 +79,7 @@ export interface CreateReducer<
   Name extends string = string
 > {
   name: Name;
-  //initialState: State;
-  //reducers: ValidateReducers<State, R>;
   actions: ReducerActions<R> & EffectActions<M>;
-  //effects: EfffectOptioons;
   reducer: Reducer<State, AnyAction>;
 }
 
@@ -135,4 +132,3 @@ export type CombinedState<S> = EmptyObject & S;
 
 export type ActionFn = (...args: any[]) => Action;
 export type ActionParam = ActionFn | ActionFn[];
-

@@ -19,6 +19,10 @@ function createOrbitMiddleware() {
     };
 }
 
+/**
+ * Orbit is a redux middleware that allows you to subscribe to effects based on action.
+ *
+ */
 export const orbit = createOrbitMiddleware();
 
 export function subscribeEffect(
@@ -44,25 +48,18 @@ export function subscribeEffect(
   };
 }
 
-export function effectOn(...actionTypes: string[]) {
-  return {
-    subscribe: (callback: EffectHandler) => {
-      return subscribeEffect(actionTypes, callback);
-    },
-  };
-}
-
-export function useOrbitEffect(
-  acionTypes: ActionParam,
-  callbackFn: EffectHandler
-) {
+/**
+ * A hook that allows you to manage side effects in your component based on the action/s.
+ * And it will automatically unsubscribe when the component unmounts.
+ * @param acions An array of action functions or a single action funcion - `generated from createAction()`.
+ * @param handlerFn A function that accepts the dispatch, getState and action.
+ */
+export function useOrbitEffect(acions: ActionParam, handlerFn: EffectHandler) {
   useIsomorphicLayoutEffect(() => {
-    let actions: ActionFn[] = Array.isArray(acionTypes)
-      ? acionTypes
-      : [acionTypes];
+    let _actions: ActionFn[] = Array.isArray(acions) ? acions : [acions];
     const sub = subscribeEffect(
-      actions.map((a) => a().type),
-      callbackFn
+      _actions.map((a) => a().type),
+      handlerFn
     );
     return () => {
       sub.unsubscribe();

@@ -5,7 +5,14 @@ import {
   ReducerOptions,
   EffectHandlers,
 } from './typeHelper';
-import { effectOn } from './orbit';
+import { subscribeEffect } from './orbit';
+/**
+ * A function that accepts an initial state, an object full of reducer
+ * functions, and a "state name", and also it can have an object full of effect handlers, and automatically generates
+ * action creators and action types that correspond to the
+ * reducers and state and effects.
+ *
+ */
 export function createReducer<
   State,
   CR extends ReducerMetods<State>,
@@ -27,8 +34,6 @@ export function createReducer<
     }
     return state;
   }
-  //reducer.effects = effects;
-  ///reducer.initialState = options.initialState;
 
   Object.keys(reducers).map((key) => {
     const mkey = `${options.name}_${key}`;
@@ -39,15 +44,12 @@ export function createReducer<
 
   Object.keys(effects).map((key) => {
     actions[key] = createAction(key);
-    effectOn(key).subscribe(effects[key]);
+    subscribeEffect([key], effects[key]);
   });
 
   return {
     name: options.name,
-    //initialState: options.initialState,
-    actions: actions as any,
-    //reducers,
-    //effects,
+    actions,
     reducer,
   };
 }
