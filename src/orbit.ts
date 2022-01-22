@@ -29,10 +29,7 @@ function createOrbitMiddleware() {
  */
 export const orbit = createOrbitMiddleware();
 
-function subscribeEffect(
-  actionTypes: string[],
-  callback: EffectHandler
-) {
+function subscribeEffect(actionTypes: string[], callback: EffectHandler) {
   let key = Number(new Date()).toString() + Math.random();
   let notifyCallback = (dispatch: any, getData: any, action: AnyAction) => {
     if (actionTypes.includes(action.type)) {

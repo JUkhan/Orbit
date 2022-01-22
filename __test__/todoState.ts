@@ -1,4 +1,4 @@
-import { createReducer, PayloadAction } from '../src';
+import { createState, PayloadAction } from '../src';
 export interface Todo {
   id: number;
   text: string;
@@ -10,7 +10,7 @@ export enum TodoFilter {
   SHOW_ACTIVE = 'SHOW_ACTIVE',
 }
 
-export const todoSlice = createReducer({
+export const todoState = createState({
   name: 'todos',
   initialState: [{ id: 1, text: 'Learn FP', completed: false }],
   reducers: {
@@ -33,9 +33,9 @@ export const todoSlice = createReducer({
   },
 });
 
-export const { addTodo, removeTodo, toggleTodo } = todoSlice.actions;
+export const { addTodo, removeTodo, toggleTodo } = todoState.actions;
 
-export const todoFilterSlice = createReducer({
+export const todoFilterState = createState({
   name: 'todoFilter',
   initialState: TodoFilter.SHOW_ALL,
   reducers: {
@@ -44,4 +44,4 @@ export const todoFilterSlice = createReducer({
     },
   },
 });
-export const { setFilter } = todoFilterSlice.actions;
+export const { setFilter } = todoFilterState.actions;

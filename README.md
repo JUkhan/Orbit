@@ -1,6 +1,6 @@
 # Orbit
 
-Orbit is a redux middleware that allows you to subscribe to effects based on action, and it also works like a redux-thunk for the effects inside the creatReducer() function.
+Orbit is a redux middleware that allows you to subscribe to effects based on action, and it works like a redux-thunk for the effects that pass to the createState() function. Orbit makes it fun to use Redux, Actions and Side Effects.
 
 ## Installation
 
@@ -19,14 +19,14 @@ yarn add orbit-redux redux react-redux
 ## Create a Redux State Reducer
 
 ```ts
-import { createReducer, PayloadAction } from 'orbit-redux';
+import { createState, PayloadAction } from 'orbit-redux';
 
 export interface CouterState {
   count: number;
   loading: boolean;
 }
 
-export const counterSlice = createReducer({
+export const counterState = createState({
   name: 'counter',
   initialState: { count: 0, loading: false },
   reducers: {
@@ -51,7 +51,7 @@ export const counterSlice = createReducer({
   },
 });
 
-export const { increment, decrement, loading, asyncInc } = counterSlice.actions;
+export const { increment, decrement, loading, asyncInc } = counterState.actions;
 ```
 
 ## Create a Redux Store
@@ -60,17 +60,18 @@ export const { increment, decrement, loading, asyncInc } = counterSlice.actions;
 import { createStore, applyMiddleware } from 'redux';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { combineReducers, orbit } from 'orbit-redux';
-import { counterSlice } from './counter/counterState';
-import { todoSlice, todoFilterSlice } from './todo/todoState';
+import { counterState } from './counterState';
+import { todoState, todoFilterState } from './todoState';
 
-export const store = createStore(
-  combineReducers({
-    [counterSlice.name]: counterSlice.reducer,
-    [todoSlice.name]: todoSlice.reducer,
-    [todoFilterSlice.name]: todoFilterSlice.reducer,
-  }),
-  applyMiddleware(orbit)
-);
+export const store = () =>
+  createStore(
+    combineReducers({
+      [counterState.name]: counterState.reducer,
+      [todoState.name]: todoState.reducer,
+      [todoFilterState.name]: todoFilterState.reducer,
+    }),
+    applyMiddleware(orbit)
+  );
 
 type RootState = ReturnType<typeof store.getState>;
 type Dispatch = typeof store.dispatch;
@@ -108,10 +109,6 @@ import { asyncInc, decrement, increment } from './counterState';
 import { useOrbitEffect } from 'orbit-redux';
 
 export default () => {
-  // useOrbitEffect([increment, decrement], (dispatch, getState, action) => {
-  //   console.log(action);
-  // });
-
   const { count, loading } = useAppSelector((state) => state.counter);
   const dispatch = useAppDispatch();
 
@@ -130,3 +127,53 @@ export default () => {
 ```
 
 [Demo](https://stackblitz.com/edit/orbit-demo-1?file=index.tsx)
+
+## Develop a action specific selector
+
+useSelectorForAcions() - a hook to select state for specific action/actions. unlike useSelect() that call selector function each and every time for any part of state changed.
+
+```ts
+import { ActionParam, useOrbitEffect } from 'orbit-redux';
+import { useState } from 'react';
+import { useStore } from 'react-redux';
+
+export function useSelectorForActions<S = any, TSelected = any>(
+  acions: ActionParam,
+  selector: (state: S) => TSelected,
+  equalityFn: (left: TSelected, right: TSelected) => boolean = (left, right) =>
+    left === right
+) {
+  const store = useStore();
+  const [selectedState, setState] = useState(selector(store.getState()));
+  let oldState = selectedState;
+  useOrbitEffect(acions, () => {
+    setTimeout(() => {
+      const newState = selector(store.getState());
+      if (!equalityFn(newState, oldState)) {
+        setState(newState);
+        oldState = newState;
+      }
+    }, 0);
+  });
+
+  return selectedState;
+}
+```
+
+## Example
+
+```ts
+const todos = useSelectorForActions(
+  [setFilter, addTodo, toggleTodo],
+  (state: RootState) => {
+    switch (state.todoFilter) {
+      case TodoFilter.SHOW_ALL:
+        return state.todos;
+      case TodoFilter.SHOW_COMPLETED:
+        return state.todos.filter((todo) => todo.completed);
+      case TodoFilter.SHOW_ACTIVE:
+        return state.todos.filter((todo) => !todo.completed);
+    }
+  }
+);
+```
