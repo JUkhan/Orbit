@@ -137,7 +137,7 @@ import { ActionParam, useOrbitEffect } from 'orbit-redux';
 import { useState } from 'react';
 import { useStore } from 'react-redux';
 
-export function useSelectorForActions<S = any, TSelected = any>(
+export function useSelectorByAcions<S = any, TSelected = any>(
   acions: ActionParam,
   selector: (state: S) => TSelected,
   equalityFn: (left: TSelected, right: TSelected) => boolean = (left, right) =>
@@ -163,7 +163,7 @@ export function useSelectorForActions<S = any, TSelected = any>(
 ## Example
 
 ```ts
-const todos = useSelectorForActions(
+const todos = useSelectorByAcions(
   [setFilter, addTodo, toggleTodo],
   (state: RootState) => {
     switch (state.todoFilter) {
