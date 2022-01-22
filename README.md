@@ -128,9 +128,9 @@ export default () => {
 
 [Demo](https://stackblitz.com/edit/orbit-demo-1?file=index.tsx)
 
-## Develop a action specific selector
+## Develop an action specific selector
 
-useSelectorForAcions() - a hook to select state for specific action/actions. unlike useSelect() that call selector function each and every time for any part of state changed.
+useSelectorByAcions() - a hook to select state for specific action/actions. unlike useSelect() that call selector function each and every time for any part of state changed.
 
 ```ts
 import { ActionParam, useOrbitEffect } from 'orbit-redux';
