@@ -16,7 +16,7 @@ npm i orbit-redux redux react-redux
 yarn add orbit-redux redux react-redux
 ```
 
-## Create a Redux State Reducer
+## Create a Redux State, Reducer and effects on it
 
 ```ts
 import { createState, PayloadAction } from 'orbit-redux';
