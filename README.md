@@ -63,15 +63,14 @@ import { combineReducers, orbit } from 'orbit-redux';
 import { counterState } from './counterState';
 import { todoState, todoFilterState } from './todoState';
 
-export const store = () =>
-  createStore(
-    combineReducers({
-      [counterState.name]: counterState.reducer,
-      [todoState.name]: todoState.reducer,
-      [todoFilterState.name]: todoFilterState.reducer,
-    }),
-    applyMiddleware(orbit)
-  );
+export const store = createStore(
+  combineReducers({
+    [counterState.name]: counterState.reducer,
+    [todoState.name]: todoState.reducer,
+    [todoFilterState.name]: todoFilterState.reducer,
+  }),
+  applyMiddleware(orbit)
+);
 
 type RootState = ReturnType<typeof store.getState>;
 type Dispatch = typeof store.dispatch;
@@ -130,7 +129,7 @@ export default () => {
 
 ## Develop an action specific selector
 
-useSelectorByAcions() - a hook to select state for specific action/actions. unlike useSelect() that call selector function each and every time for any part of state changed.
+useSelectorByAcions() - a hook to select state for specific action/actions. unlike useSelector() that call selector function each and every time for any part of state changed.
 
 ```ts
 import { ActionParam, useOrbitEffect } from 'orbit-redux';
