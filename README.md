@@ -21,11 +21,6 @@ yarn add orbit-redux redux react-redux
 ```ts
 import { createState, PayloadAction } from 'orbit-redux';
 
-export interface CouterState {
-  count: number;
-  loading: boolean;
-}
-
 export const counterState = createState({
   name: 'counter',
   initialState: { count: 0, loading: false },
