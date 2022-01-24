@@ -132,3 +132,11 @@ export type CombinedState<S> = EmptyObject & S;
 
 export type ActionFn = (...args: any[]) => Action;
 export type ActionParam = ActionFn | ActionFn[];
+
+export interface TypedUseSelectorByActionsHook<TState> {
+  <TSelected>(
+    actions: ActionParam,
+    selector: (state: TState) => TSelected,
+    equalityFn?: (left: TSelected, right: TSelected) => boolean
+  ): TSelected;
+}
