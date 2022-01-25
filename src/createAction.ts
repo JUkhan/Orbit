@@ -3,7 +3,7 @@ import {
   ActionCreatorWithoutPayload,
 } from './typeHelper';
 
-export function createAction<P = any, T extends string = string>(
+export function createAction<P = void, T extends string = string>(
   type: string
 ): ActionCreatorWithoutPayload<T> | ActionCreatorWithPayload<P, T> {
   return (payload?: P): any => {

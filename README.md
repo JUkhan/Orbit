@@ -19,9 +19,9 @@ yarn add orbit-redux redux react-redux
 ## Create a Redux State, Reducer and effects on it
 
 ```ts
-import { createState, PayloadAction } from 'orbit-redux';
+import { createSlice, PayloadAction } from 'orbit-redux';
 
-export const counterState = createState({
+export const counterSlice = createSlice({
   name: 'counter',
   initialState: { count: 0, loading: false },
   reducers: {
@@ -46,7 +46,7 @@ export const counterState = createState({
   },
 });
 
-export const { increment, decrement, loading, asyncInc } = counterState.actions;
+export const { increment, decrement, loading, asyncInc } = counterSlice.actions;
 ```
 
 ## Create a Redux Store
@@ -55,14 +55,14 @@ export const { increment, decrement, loading, asyncInc } = counterState.actions;
 import { createStore, applyMiddleware } from 'redux';
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import { combineReducers, orbit } from 'orbit-redux';
-import { counterState } from './counterState';
-import { todoState, todoFilterState } from './todoState';
+import { counterSlice } from './counterState';
+import { todoSlice, todoFilterSlice } from './todoSlice';
 
 export const store = createStore(
   combineReducers({
-    [counterState.name]: counterState.reducer,
-    [todoState.name]: todoState.reducer,
-    [todoFilterState.name]: todoFilterState.reducer,
+    [counterSlice.name]: counterSlice.reducer,
+    [todoSlice.name]: todoSlice.reducer,
+    [todoFilterSlice.name]: todoFilterSlice.reducer,
   }),
   applyMiddleware(orbit)
 );
@@ -141,13 +141,11 @@ export function useSelectorByAcions<S = any, TSelected = any>(
   const [selectedState, setState] = useState(selector(store.getState()));
   let oldState = selectedState;
   useOrbitEffect(acions, () => {
-    setTimeout(() => {
-      const newState = selector(store.getState());
-      if (!equalityFn(newState, oldState)) {
-        setState(newState);
-        oldState = newState;
-      }
-    }, 0);
+    const newState = selector(store.getState());
+    if (!equalityFn(newState, oldState)) {
+      setState(newState);
+      oldState = newState;
+    }
   });
 
   return selectedState;

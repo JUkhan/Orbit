@@ -1,5 +1,5 @@
 import { combineReducers, orbit } from '../src';
-import { counterState } from './counterState';
+import { counterState, increment } from './counterState';
 import { createStore, applyMiddleware } from 'redux';
 import { todoState, todoFilterState } from './todoState';
 

@@ -61,7 +61,7 @@ export type ReducerActions<Reducers extends ReducerMetods<any>> = {
 export type EfffectOptioons = {
   [key: string]: EffectHandler;
 };
-export interface StateOptions<
+export interface SliceOptions<
   State = unknown,
   R extends ReducerMetods<State> = ReducerMetods<State>,
   M extends EffectHandlers = EffectHandlers,
@@ -72,7 +72,7 @@ export interface StateOptions<
   reducers: ValidateReducers<State, R>;
   effects?: ValidateHandlers<M>;
 }
-export interface CreateState<
+export interface Slice<
   State = unknown,
   R extends ReducerMetods<State> = ReducerMetods<State>,
   M extends EffectHandlers = EffectHandlers,

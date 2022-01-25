@@ -33,11 +33,9 @@ function subscribeEffect(actionTypes: string[], callback: EffectHandler) {
   let key = Number(new Date()).toString() + Math.random();
   let notifyCallback = (dispatch: any, getData: any, action: AnyAction) => {
     if (actionTypes.includes(action.type)) {
-      callback(
-        (newAction: AnyAction) => dispatch(newAction),
-        () => getData(),
-        action
-      );
+      setTimeout(() => {
+        callback(dispatch, getData, action);
+      }, 0);
     }
   };
   effectMap.set(key, notifyCallback);
@@ -67,3 +65,4 @@ export function useOrbitEffect(acions: ActionParam, handlerFn: EffectHandler) {
     };
   }, []);
 }
+

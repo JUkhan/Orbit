@@ -1,9 +1,6 @@
-import { createState, PayloadAction } from '../src';
-export interface CouterState {
-  count: number;
-  loading: boolean;
-}
-export const counterState = createState({
+import { createSlice, PayloadAction, createAction } from '../src';
+
+export const counterState = createSlice({
   name: 'counter',
   initialState: { count: 0, loading: false },
   reducers: {
