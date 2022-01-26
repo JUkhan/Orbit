@@ -19,7 +19,7 @@ yarn add orbit-redux redux react-redux
 ## Create a Redux State, Reducer and effects on it
 
 ```ts
-import { createSlice, PayloadAction } from 'orbit-redux';
+import { createSlice, PayloadAction, createEffect } from 'orbit-redux';
 
 export const counterSlice = createSlice({
   name: 'counter',
@@ -47,6 +47,11 @@ export const counterSlice = createSlice({
 });
 
 export const { increment, decrement, loading, asyncInc } = counterSlice.actions;
+
+//Also you can use createEffect function for app side effects
+createEffect(increment, (dispatch, getState, action) => {
+  console.log(dispatch, getState(), action);
+});
 ```
 
 ## Create a Redux Store

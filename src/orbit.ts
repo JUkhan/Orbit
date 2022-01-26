@@ -66,3 +66,17 @@ export function useOrbitEffect(acions: ActionParam, handlerFn: EffectHandler) {
   }, []);
 }
 
+/**
+ * A funcion that allows you to manage side effects from ouside of the components.
+ * @param acions An array of action functions or a single action funcion - `generated from createAction()`.
+ * @param handlerFn A function that accepts the dispatch, getState and action.
+ * @returns cleanup function
+ */
+export function createEffect(acions: ActionParam, handlerFn: EffectHandler) {
+  let _actions: ActionFn[] = Array.isArray(acions) ? acions : [acions];
+  const sub = subscribeEffect(
+    _actions.map((a) => a().type),
+    handlerFn
+  );
+  return sub;
+}

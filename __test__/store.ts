@@ -1,4 +1,4 @@
-import { combineReducers, orbit } from '../src';
+import { combineReducers, orbit, createEffect } from '../src';
 import { counterState, increment } from './counterState';
 import { createStore, applyMiddleware } from 'redux';
 import { todoState, todoFilterState } from './todoState';
@@ -12,3 +12,7 @@ export const store = () =>
     }),
     applyMiddleware(orbit)
   );
+
+createEffect(increment, (dispatch, getState, action) => {
+  console.log(dispatch, getState(), action, '--------');
+});
