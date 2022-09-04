@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createAction } from '../src';
+import { createSlice, PayloadAction, on } from '../src';
 
 export const counterState = createSlice({
   name: 'counter',
@@ -16,14 +16,18 @@ export const counterState = createSlice({
   },
 
   effects: {
-    async asyncInc(dispatch, _, action: PayloadAction<string>) {
+    async asyncInc(action: PayloadAction<string>) {
       console.log(action.payload);
-      dispatch(loading());
-      await new Promise((resolve) =>
-        setTimeout(() => dispatch(increment(1)), 100)
-      );
+      loading();
+      await new Promise((resolve) => setTimeout(() => increment(1), 100));
     },
   },
 });
 
 export const { increment, decrement, loading, asyncInc } = counterState.actions;
+
+on(increment, decrement)
+  // .debounce(10)
+  .effect((action, getData, dis) => {
+    console.log(action, getData(), dis, '::::');
+  });

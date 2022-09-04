@@ -37,10 +37,10 @@ export const counterSlice = createSlice({
   },
 
   effects: {
-    async asyncInc(dispatch) {
-      dispatch(loading());
+    async asyncInc(action) {
+      loading();
       await new Promise((resolve) =>
-        setTimeout(() => dispatch(increment(1)), 100)
+        setTimeout(() => increment(1), 100)
       );
     },
   },
@@ -49,9 +49,15 @@ export const counterSlice = createSlice({
 export const { increment, decrement, loading, asyncInc } = counterSlice.actions;
 
 //Also you can use createEffect function for app side effects
-createEffect(increment, (dispatch, getState, action) => {
-  console.log(dispatch, getState(), action);
+createEffect(increment, (action, getState, dispatch) => {
+  console.log( action);
 });
+
+on(increment, decrement)
+  .debounce(1000)
+  .effect((action, getState, dispatch) => {
+    console.log(action);
+  });
 ```
 
 ## Create a Redux Store
@@ -109,14 +115,12 @@ import { useOrbitEffect } from 'orbit-redux';
 
 export default () => {
   const { count, loading } = useAppSelector((state) => state.counter);
-  const dispatch = useAppDispatch();
-
   return (
     <div>
       <h1>Counter</h1>
-      <button onClick={() => dispatch(increment(10))}>increment</button>
-      <button onClick={() => dispatch(decrement())}>decrement</button>
-      <button onClick={() => dispatch(asyncInc())}>
+      <button onClick={() => increment(10)}>increment</button>
+      <button onClick={() => decrement()}>decrement</button>
+      <button onClick={() => asyncInc()}>
         {loading ? 'loading...' : 'asyncInc'}
       </button>
       <b>{count}</b>

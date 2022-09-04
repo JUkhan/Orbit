@@ -84,9 +84,9 @@ export interface Slice<
 }
 
 export type EffectHandler<A extends Action = AnyAction> = (
-  dispatch: (action: AnyAction) => void,
+  action: A,
   getState: () => any,
-  action: A
+  dispatch: (action: AnyAction) => void
 ) => void;
 
 export type EffectHandlers = {

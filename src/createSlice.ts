@@ -6,6 +6,8 @@ import {
   EffectHandlers,
 } from './typeHelper';
 
+import { __helper } from './orbit';
+
 /**
  * A function that accepts an initial state, an object full of reducer
  * functions, and a "state name", and also it can have an object full of effect handlers, and automatically generates
@@ -42,8 +44,10 @@ export function createSlice<
 
   Object.keys(effects).map((key) => {
     const handler = effects[key];
-    actions[key] = (payload: any) => (dispatch: any, getState: any) =>
-      handler(dispatch, getState, { payload: payload });
+    actions[key] = (payload: any) =>
+      __helper.dispatch((dispatch: any, getState: any) =>
+        handler({ payload }, getState, dispatch)
+      );
   });
 
   return {

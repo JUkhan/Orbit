@@ -13,6 +13,6 @@ export const store = () =>
     applyMiddleware(orbit)
   );
 
-createEffect(increment, (dispatch, getState, action) => {
+createEffect(increment, (action, getState, dispatch) => {
   console.log(dispatch, getState(), action, '--------');
 });

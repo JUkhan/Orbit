@@ -1,7 +1,7 @@
 import { combineReducers } from './combineReducers';
 import { createSlice } from './createSlice';
 export * from './typeHelper';
-import { orbit, useOrbitEffect, createEffect } from './orbit';
+import { orbit, useOrbitEffect, createEffect, on } from './orbit';
 import { createAction } from './createAction';
 
 export {
@@ -11,4 +11,5 @@ export {
   useOrbitEffect,
   createAction,
   createEffect,
+  on,
 };

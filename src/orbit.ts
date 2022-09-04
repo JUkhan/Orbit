@@ -3,23 +3,27 @@ import { Action, AnyAction } from 'redux';
 import { EffectHandler, ActionParam, ActionFn } from './typeHelper';
 
 const effectMap = new Map<string, any>();
-
+export const __helper = {
+  dispatch(action: any) {},
+};
 function createOrbitMiddleware() {
   return ({
-      dispatch,
-      getState,
-    }: {
-      dispatch: (action: Action) => void;
-      getState: () => any;
-    }) =>
-    (next: any) =>
-    (action: any) => {
+    dispatch,
+    getState,
+  }: {
+    dispatch: (action: Action) => void;
+    getState: () => any;
+  }) => {
+    __helper.dispatch = dispatch;
+    return (next: any) => (action: any) => {
       if (typeof action === 'function') {
         return action(dispatch, getState);
       }
+
       effectMap.forEach((cal) => cal(dispatch, getState, action));
       return next(action);
     };
+  };
 }
 
 /**
@@ -34,7 +38,7 @@ function subscribeEffect(actionTypes: string[], callback: EffectHandler) {
   let notifyCallback = (dispatch: any, getData: any, action: AnyAction) => {
     if (actionTypes.includes(action.type)) {
       setTimeout(() => {
-        callback(dispatch, getData, action);
+        callback(action, getData, dispatch);
       }, 0);
     }
   };
@@ -50,14 +54,14 @@ function subscribeEffect(actionTypes: string[], callback: EffectHandler) {
 /**
  * A hook that allows you to manage side effects in your component based on the action/s.
  * And it will automatically unsubscribe when the component unmounts.
- * @param acions An array of action functions or a single action funcion - `generated from createAction()`.
+ * @param actions An array of action functions or a single action function - `generated from createAction()`.
  * @param handlerFn A function that accepts the dispatch, getState and action.
  */
-export function useOrbitEffect(acions: ActionParam, handlerFn: EffectHandler) {
+export function useOrbitEffect(actions: ActionParam, handlerFn: EffectHandler) {
   useIsomorphicLayoutEffect(() => {
-    let _actions: ActionFn[] = Array.isArray(acions) ? acions : [acions];
+    let _actions: ActionFn[] = Array.isArray(actions) ? actions : [actions];
     const sub = subscribeEffect(
-      _actions.map((a) => a().type),
+      _actions.map((actionFn: any) => actionFn._$atype),
       handlerFn
     );
     return () => {
@@ -65,18 +69,45 @@ export function useOrbitEffect(acions: ActionParam, handlerFn: EffectHandler) {
     };
   }, []);
 }
+function debounce(func: any, timeout = 300) {
+  let timer: any;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      //@ts-ignore
+      func.apply(this, args);
+    }, timeout);
+  };
+}
 
 /**
- * A funcion that allows you to manage side effects from ouside of the components.
- * @param acions An array of action functions or a single action funcion - `generated from createAction()`.
+ * A function that allows you to manage side effects from outside of the components.
+ * @param actions An array of action functions or a single action function - `generated from createAction()`.
  * @param handlerFn A function that accepts the dispatch, getState and action.
  * @returns cleanup function
  */
-export function createEffect(acions: ActionParam, handlerFn: EffectHandler) {
-  let _actions: ActionFn[] = Array.isArray(acions) ? acions : [acions];
+export function createEffect(actions: ActionParam, handlerFn: EffectHandler) {
+  let _actions: ActionFn[] = Array.isArray(actions) ? actions : [actions];
   const sub = subscribeEffect(
-    _actions.map((a) => a().type),
+    _actions.map((actionFn: any) => actionFn._$atype),
     handlerFn
   );
   return sub;
+}
+
+export function on(...actions: ActionFn[]) {
+  let _actions: string[] = actions.map((actionFn: any) => actionFn._$atype);
+
+  return {
+    debounce(milliseconds: number) {
+      return {
+        effect(handlerFn: EffectHandler) {
+          return subscribeEffect(_actions, debounce(handlerFn, milliseconds));
+        },
+      };
+    },
+    effect(handlerFn: EffectHandler) {
+      return subscribeEffect(_actions, handlerFn);
+    },
+  };
 }
