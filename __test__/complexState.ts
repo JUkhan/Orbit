@@ -6,10 +6,10 @@ export const complexState = createSlice({
   reducers: {},
 
   effects: {
-    loadData(action: PayloadAction<string>, put) {
+    loadData(action: PayloadAction<void>, put) {
       put('emp', api());
     },
-    loadErrorData(action: PayloadAction<string>, put) {
+    loadErrorData(action: PayloadAction<void>, put) {
       put('emp', apiError());
     },
     add(action: PayloadAction<number>, put, getState) {

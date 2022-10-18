@@ -16,8 +16,7 @@ export const counterState = createSlice({
   },
 
   effects: {
-    async asyncInc(action: PayloadAction<string>, put) {
-      console.log(action.payload);
+    async asyncInc() {
       loading();
       await new Promise((resolve) => setTimeout(() => increment(1), 100));
     },

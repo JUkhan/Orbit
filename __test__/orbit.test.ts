@@ -24,7 +24,7 @@ describe('Orbit', () => {
     expect(orbit.getState().todos.length).toBe(2);
   });
 
-  it('incremen', () => {
+  it('increment', () => {
     increment(1);
     expect(orbit.getState().counter.count).toBe(1);
   });
@@ -34,7 +34,7 @@ describe('Orbit', () => {
   });
 
   it('async increment', async () => {
-    asyncInc('async-inc-on');
+    asyncInc();
     expect(orbit.getState().counter.loading).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(orbit.getState().counter.count).toBe(1);
@@ -47,7 +47,7 @@ describe('Orbit', () => {
     expect(orbit.getState().complex.emp.loading).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 150));
     console.log(orbit.getState().complex);
-    expect(orbit.getState().complex.emp.data.length).toBe(3);
+    expect(orbit.getState().complex.emp?.data?.length).toBe(3);
   });
 
   it('complex state load error data', async () => {
@@ -60,11 +60,11 @@ describe('Orbit', () => {
   });
 
   it('complex state add emp', async () => {
-    add(101);
+    add(10);
     console.log(orbit.getState().complex);
     expect(orbit.getState().complex.emp.loading).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 10));
     console.log(orbit.getState().complex);
-    expect(orbit.getState().complex.emp.data.length).toBe(1);
+    expect(orbit.getState().complex.emp?.data?.length).toBe(1);
   });
 });

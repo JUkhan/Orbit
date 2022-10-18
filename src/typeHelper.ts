@@ -22,9 +22,25 @@ export type ValidateReducers<S, ACR extends ReducerMetods<S>> = ACR & {
     : {};
 };
 
-// export interface Action<T = any> {
-//   type: T;
-// }
+export type EffectHandlers = {
+  [K: string]: EffectHandler<PayloadAction<any>>;
+};
+
+export type ValidateEffects<ACR extends EffectHandlers> = ACR & {
+  [T in keyof ACR]: ACR[T] extends {
+    handler(
+      action?: infer A,
+      put?: (key: string, data: Promise<any>) => void,
+      getState?: () => any,
+      dispatch?: (action: AnyAction) => void
+    ): void;
+  }
+    ? {
+        prepare(...a: never[]): Omit<A, 'type'>;
+      }
+    : {};
+};
+
 export declare type PayloadAction<P = void, T extends string = string> = {
   payload: P;
   type: T;
@@ -70,7 +86,7 @@ export interface SliceOptions<
   name: Name;
   initialState: State;
   reducers: ValidateReducers<State, R>;
-  effects?: ValidateHandlers<M>;
+  effects?: ValidateEffects<M>;
 }
 export interface Slice<
   State = unknown,
@@ -85,7 +101,7 @@ export interface Slice<
 
 export type EffectHandler<A extends Action = AnyAction> = (
   action: A,
-  put: (key: string, api: Promise<any>) => void,
+  put: (key: string, data: Promise<any>) => void,
   getState: () => any,
   dispatch: (action: AnyAction) => void
 ) => void;
@@ -96,28 +112,11 @@ export type EffectHandler2<A extends Action = AnyAction> = (
   dispatch: (action: AnyAction) => void
 ) => void;
 
-export type EffectHandlers = {
-  [K: string]: EffectHandler<PayloadAction<any>>;
-};
-
-export type ValidateHandlers<ACR extends EffectHandlers> = ACR & {
-  [T in keyof ACR]: ACR[T] extends {
-    handler(
-      action: infer A,
-      put?: (key: string, api: Promise<any>) => void,
-      getState?: () => any,
-      dispatch?: (action: AnyAction) => void
-    ): void;
-  }
-    ? {
-        prepare(...a: never[]): Omit<A, 'type'>;
-      }
-    : {};
-};
 type ActionCreatorForEffect<R> = R extends (
-  dispatch: (action: AnyAction) => void,
+  action: infer Action,
+  put: (key: string, data: Promise<any>) => void,
   getState: () => any,
-  action: infer Action
+  dispatch: (action: AnyAction) => void
 ) => any
   ? Action extends { payload: infer P }
     ? ActionCreatorWithPayload<P>

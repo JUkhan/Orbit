@@ -1,6 +1,6 @@
 {
   "name": "orbit-redux",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Orbit is a redux middleware that allows you to subscribe to effects based on action",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
