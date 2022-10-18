@@ -28,9 +28,15 @@ export function createSlice<
   const reducers: any = options.reducers || {};
   const actions: any = {};
   const effects: any = options.effects || {};
+  const actionRegx = new RegExp(
+    `^${options.name}.+(?:request|success|failure)$`,
+    'i'
+  );
   function reducer(state: any = options.initialState, action: any) {
     if (reducers[action.type]) {
       return reducers[action.type](state, action);
+    } else if (actionRegx.test(action.type)) {
+      return { ...state, [action.key]: action.data };
     }
     return state;
   }
@@ -41,12 +47,39 @@ export function createSlice<
     reducers[key] = undefined;
     actions[key] = createAction(mkey);
   });
+  const resolveEffect =
+    (effectKey: string) => (key: string, api: Promise<any>) => {
+      __helper.dispatch({
+        type: `${options.name}_${effectKey}_request`,
+        key,
+        data: { loading: true, data: null, error: null },
+      });
 
+      api
+        .then((data) =>
+          __helper.dispatch({
+            type: `${options.name}_${effectKey}_success`,
+            key,
+            data: { loading: false, data, error: null },
+          })
+        )
+        .catch((err) =>
+          __helper.dispatch({
+            type: `${options.name}_${effectKey}_failure`,
+            key,
+            data: {
+              loading: false,
+              data: null,
+              error: err.message ? err.message : err,
+            },
+          })
+        );
+    };
   Object.keys(effects).map((key) => {
     const handler = effects[key];
     actions[key] = (payload: any) =>
       __helper.dispatch((dispatch: any, getState: any) =>
-        handler({ payload }, getState, dispatch)
+        handler({ payload }, resolveEffect(key), getState, dispatch)
       );
   });
 

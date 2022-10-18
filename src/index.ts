@@ -13,3 +13,8 @@ export {
   createEffect,
   on,
 };
+export type Data<T>={
+  loading?:boolean,
+  data?:T,
+  error?:string
+}

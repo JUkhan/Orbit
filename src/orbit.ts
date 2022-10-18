@@ -1,6 +1,6 @@
 import { useIsomorphicLayoutEffect } from './utils/useIsomorphicLayoutEffect';
 import { Action, AnyAction } from 'redux';
-import { EffectHandler, ActionParam, ActionFn } from './typeHelper';
+import {  EffectHandler2 as EffectHandler, ActionParam, ActionFn } from './typeHelper';
 
 const effectMap = new Map<string, any>();
 export const __helper = {

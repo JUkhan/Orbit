@@ -85,6 +85,13 @@ export interface Slice<
 
 export type EffectHandler<A extends Action = AnyAction> = (
   action: A,
+  put: (key: string, api: Promise<any>) => void,
+  getState: () => any,
+  dispatch: (action: AnyAction) => void
+) => void;
+
+export type EffectHandler2<A extends Action = AnyAction> = (
+  action: A,
   getState: () => any,
   dispatch: (action: AnyAction) => void
 ) => void;
@@ -96,9 +103,10 @@ export type EffectHandlers = {
 export type ValidateHandlers<ACR extends EffectHandlers> = ACR & {
   [T in keyof ACR]: ACR[T] extends {
     handler(
-      dispatch: (action: AnyAction) => void,
-      getState: () => any,
-      action?: infer A
+      action: infer A,
+      put?: (key: string, api: Promise<any>) => void,
+      getState?: () => any,
+      dispatch?: (action: AnyAction) => void
     ): void;
   }
     ? {
