@@ -48,14 +48,16 @@ export function createSlice<
     actions[key] = createAction(mkey);
   });
   const resolveEffect =
-    (effectKey: string) => (key: string, api: Promise<any>) => {
+    (effectKey: string, state: () => any) =>
+    (key: string, apiData: Promise<any>) => {
+      const currentData = state()[options.name][key].data;
       __helper.dispatch({
         type: `${options.name}_${effectKey}_request`,
         key,
-        data: { loading: true, data: null, error: null },
+        data: { loading: true, data: currentData, error: null },
       });
 
-      api
+      apiData
         .then((data) =>
           __helper.dispatch({
             type: `${options.name}_${effectKey}_success`,
@@ -69,7 +71,7 @@ export function createSlice<
             key,
             data: {
               loading: false,
-              data: null,
+              data: currentData,
               error: err.message ? err.message : err,
             },
           })
@@ -79,7 +81,7 @@ export function createSlice<
     const handler = effects[key];
     actions[key] = (payload: any) =>
       __helper.dispatch((dispatch: any, getState: any) =>
-        handler({ payload }, resolveEffect(key), getState, dispatch)
+        handler({ payload }, resolveEffect(key, getState), getState, dispatch)
       );
   });
 
