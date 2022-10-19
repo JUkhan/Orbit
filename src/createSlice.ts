@@ -48,16 +48,14 @@ export function createSlice<
     actions[key] = createAction(mkey);
   });
   const resolveEffect =
-    (effectKey: string, state: () => any) =>
-    (key: string, apiData: Promise<any>) => {
+    (effectKey: string, state: () => any) => (key: string, apiData: any) => {
       const currentData = state()[options.name][key].data;
       __helper.dispatch({
         type: `${options.name}_${effectKey}_request`,
         key,
         data: { loading: true, data: currentData, error: null },
       });
-
-      apiData
+      Promise.resolve(apiData)
         .then((data) =>
           __helper.dispatch({
             type: `${options.name}_${effectKey}_success`,

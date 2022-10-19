@@ -30,7 +30,7 @@ export type ValidateEffects<ACR extends EffectHandlers> = ACR & {
   [T in keyof ACR]: ACR[T] extends {
     handler(
       action?: infer A,
-      put?: (key: string, data: Promise<any>) => void,
+      put?: (key: string, data: any) => void,
       getState?: () => any,
       dispatch?: (action: AnyAction) => void
     ): void;
@@ -101,7 +101,7 @@ export interface Slice<
 
 export type EffectHandler<A extends Action = AnyAction> = (
   action: A,
-  put: (key: string, data: Promise<any>) => void,
+  put: (key: string, data: any) => void,
   getState: () => any,
   dispatch: (action: AnyAction) => void
 ) => void;
@@ -114,7 +114,7 @@ export type EffectHandler2<A extends Action = AnyAction> = (
 
 type ActionCreatorForEffect<R> = R extends (
   action: infer Action,
-  put: (key: string, data: Promise<any>) => void,
+  put: (key: string, data: any) => void,
   getState: () => any,
   dispatch: (action: AnyAction) => void
 ) => any

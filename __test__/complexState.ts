@@ -13,9 +13,9 @@ export const complexState = createSlice({
       put('emp', apiError());
     },
     add(action: PayloadAction<number>, put, getState) {
-      const data = getState().complex.emp?.data ?? [];
+      const data = getState().complex.emp.data ?? [];
       data.push(action.payload);
-      put('emp', Promise.resolve(data));
+      put('emp', data);
     },
   },
 });
